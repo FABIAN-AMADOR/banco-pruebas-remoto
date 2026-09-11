@@ -90,9 +90,33 @@ function setupListeners() {
         sendUpdate({ signal_type: e.target.value });
     });
 
-    inputFreq.addEventListener('change', (e) => {
+    // === EVENTO DE FRECUENCIA CORREGIDO ===
+    inputFreq.addEventListener('change', async (e) => {
         const val = parseFloat(e.target.value);
-        if (!isNaN(val)) sendUpdate({ frequency: val });
+        if (isNaN(val)) return;
+
+        // 1. Actualiza tu gráfica y panel local
+        sendUpdate({ frequency: val });
+
+        // 2. Envía la orden al laboratorio central
+        if (val >= 100 && val <= 10000) {
+            const payload = {
+                "frecuencia_hz": val,
+                "usuario": sessionStorage.getItem('banco_user') || "anonimo"
+            };
+            
+            console.log("🟡 Enviando orden al laboratorio...");
+            
+            const respuesta = await enviarOrdenCentral(payload);
+            
+            if (respuesta && !respuesta.error) {
+                console.log("🟢 Laboratorio actualizado");
+            } else {
+                console.log("🔴 Error al comunicarse con el laboratorio");
+            }
+        } else {
+            console.warn("🔴 Frecuencia fuera de rango (100 Hz - 10000 Hz)");
+        }
     });
 
     inputAmp.addEventListener('change', (e) => {
@@ -224,39 +248,11 @@ async function fetchCommits() {
     }
 }
 
-// 7. SECUENCIA DE INICIO
+// 7. SECUENCIA DE INICIO LIMPIA
 initSpectrumPlot();
 setupListeners();
-// Localiza el input de frecuencia (reemplaza 'input-freq' por el ID real de tu HTML si es distinto)
-const inputFrecuencia = document.getElementById('input-freq'); 
-
-inputFrecuencia.addEventListener('change', async (event) => {
-    const valorFrecuencia = parseFloat(event.target.value);
-    
-    // Validar el rango estricto solicitado
-    if (valorFrecuencia >= 100 && valorFrecuencia <= 10000) {
-        // Construir el JSON respetando el contrato de la API
-        const payload = {
-            "frecuencia_hz": valorFrecuencia,
-            "usuario": sessionStorage.getItem('username') || "anonimo"
-        };
-        
-        console.log("🟡 Enviando orden al laboratorio...");
-        
-        // Ejecutar POST mediante la función de la Etapa 2
-        const respuesta = await enviarOrdenCentral(payload);
-        
-        if (respuesta && !respuesta.error) {
-            console.log("🟢 Laboratorio actualizado");
-        } else {
-            console.log("🔴 No fue posible comunicarse con el laboratorio");
-        }
-    } else {
-        console.warn("🔴 Frecuencia fuera de rango (100 Hz - 10000 Hz)");
-    }
-});
 fetchAndUpdateInstrument();
 fetchCommits();
 setInterval(fetchAndUpdateInstrument, 1000); // Sondeo de instrumentos cada 1s
-setInterval(fetchCommits, 2000); // Sondeo del historial cada 2s para ver acciones de otros
+setInterval(fetchCommits, 2000); // Sondeo del historial cada 2s
 
