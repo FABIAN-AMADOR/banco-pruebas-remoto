@@ -8,7 +8,7 @@ if (!currentUser) {
 // ==========================================
 // MÓDULO DE COMUNICACIÓN - SISTEMA CENTRAL
 // ==========================================
-const API_CENTRAL_URL = "https://script.google.com/macros/s/AKfycbzqnGeKDXXL_D25oE31Ndo1yMJbjaW3yfb4jnIQUaoeKco5lWN1AYeMOADNXhAgeQP3/exec";
+const API_CENTRAL_URL = "/api/central";
 
 async function enviarOrdenCentral(payload) {
     console.log("-> Petición enviada a API Central");
