@@ -227,9 +227,36 @@ async function fetchCommits() {
 // 7. SECUENCIA DE INICIO
 initSpectrumPlot();
 setupListeners();
+// Localiza el input de frecuencia (reemplaza 'input-freq' por el ID real de tu HTML si es distinto)
+const inputFrecuencia = document.getElementById('input-freq'); 
+
+inputFrecuencia.addEventListener('change', async (event) => {
+    const valorFrecuencia = parseFloat(event.target.value);
+    
+    // Validar el rango estricto solicitado
+    if (valorFrecuencia >= 100 && valorFrecuencia <= 10000) {
+        // Construir el JSON respetando el contrato de la API
+        const payload = {
+            "frecuencia_hz": valorFrecuencia,
+            "usuario": sessionStorage.getItem('username') || "anonimo"
+        };
+        
+        console.log("🟡 Enviando orden al laboratorio...");
+        
+        // Ejecutar POST mediante la función de la Etapa 2
+        const respuesta = await enviarOrdenCentral(payload);
+        
+        if (respuesta && !respuesta.error) {
+            console.log("🟢 Laboratorio actualizado");
+        } else {
+            console.log("🔴 No fue posible comunicarse con el laboratorio");
+        }
+    } else {
+        console.warn("🔴 Frecuencia fuera de rango (100 Hz - 10000 Hz)");
+    }
+});
 fetchAndUpdateInstrument();
 fetchCommits();
 setInterval(fetchAndUpdateInstrument, 1000); // Sondeo de instrumentos cada 1s
 setInterval(fetchCommits, 2000); // Sondeo del historial cada 2s para ver acciones de otros
 
-setTimeout(() => enviarOrdenCentral({ "frecuencia_hz": 2500, "usuario": "Fabian" }), 2000);
