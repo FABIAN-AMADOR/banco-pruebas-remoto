@@ -5,6 +5,35 @@ if (!currentUser) {
     sessionStorage.setItem('banco_user', currentUser);
 }
 
+// ==========================================
+// MÓDULO DE COMUNICACIÓN - SISTEMA CENTRAL
+// ==========================================
+const API_CENTRAL_URL = "https://script.google.com/macros/s/AKfycbzqnGeKDXXL_D25oE31Ndo1yMJbjaW3yfb4jnIQUaoeKco5lWN1AYeMOADNXhAgeQP3/exec";
+
+async function enviarOrdenCentral(payload) {
+    console.log("-> Petición enviada a API Central");
+    console.log("-> JSON enviado:", JSON.stringify(payload, null, 2));
+    
+    try {
+        const response = await fetch(API_CENTRAL_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        console.log("-> Código HTTP:", response.status);
+        
+        const data = await response.json();
+        console.log("-> Respuesta recibida:", data);
+        
+        return data;
+    } catch (error) {
+        console.error("-> Error de comunicación:", error);
+    }
+}
+
 // 2. FUNCIONES AUXILIARES Y GRÁFICA
 function formatFrequency(hz) {
     if (hz >= 1000000) {
@@ -202,3 +231,5 @@ fetchAndUpdateInstrument();
 fetchCommits();
 setInterval(fetchAndUpdateInstrument, 1000); // Sondeo de instrumentos cada 1s
 setInterval(fetchCommits, 2000); // Sondeo del historial cada 2s para ver acciones de otros
+
+setTimeout(() => enviarOrdenCentral({ "frecuencia_hz": 2500, "usuario": "Fabian" }), 2000);
