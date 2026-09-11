@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Pruebas Remoto</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h1>BANCO DE PRUEBAS REMOTO</h1>
+    </header>
+    <main class="main-container">
+        <aside class="status-panel">
+            <h2>ESTADO DEL GENERADOR</h2>
+            <div class="commits-panel">
+                <h3>ÚLTIMAS MODIFICACIONES</h3>
+                <div id="commits-list">
+                    <div class="commit-item">Cargando historial...</div>
+                </div>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Estado:</span>
+                <span id="val-power" class="status-value led-off">APAGADO</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Tipo de señal:</span>
+                <span id="val-type" class="status-value">---</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Frecuencia:</span>
+                <span id="val-freq" class="status-value">---</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Amplitud:</span>
+                <span id="val-amp" class="status-value">---</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Ancho de banda:</span>
+                <span id="val-bw" class="status-value">---</span>
+            </div>
+        </aside>
+        <section class="analyzer-panel">
+            <h2>ANALIZADOR DE ESPECTROS</h2>
+            <div id="spectrum-plot" style="width: 100%; height: 100%; min-height: 400px;"></div>
+        </section>
+    </main>
+    <footer class="generator-panel">
+        <h2>GENERADOR DE SEÑALES - CONTROLES</h2>
+        <div class="controls-container">
+            <button id="btn-power" class="ctrl-btn off">APAGADO</button>
+            
+            <div class="control-group">
+                <label for="select-type">Tipo de Señal:</label>
+                <select id="select-type">
+                    <option value="Seno">Seno</option>
+                    <option value="Cuadrada">Cuadrada</option>
+                    <option value="Ruido">Ruido</option>
+                    <option value="Voz">Voz</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="input-freq">Frecuencia (Hz):</label>
+                <input type="number" id="input-freq" value="1000000" step="50000" min="0" max="5000000">
+            </div>
+
+            <div class="control-group">
+                <label for="input-amp">Amplitud (dBm):</label>
+                <input type="number" id="input-amp" value="-10" step="1" min="-120" max="20">
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Contenedor del Chat Flotante -->
+    <div id="chat-container" class="chat-closed">
+        <div id="chat-header">
+            <span>🤖 ASISTENTE DEL BANCO</span>
+            <button id="chat-toggle-btn">▲</button>
+        </div>
+        <div id="chat-messages">
+            <div class="msg-bot">Hola, soy el asistente del Banco de Pruebas Remoto. Puedo consultar el estado y modificar parámetros.</div>
+        </div>
+        <div id="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Ej: ponlo en 2 MHz...">
+            <button id="chat-send-btn">➤</button>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

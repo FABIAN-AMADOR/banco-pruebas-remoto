@@ -1,0 +1,202 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: #1e1e1e;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.header {
+    background-color: #007acc;
+    text-align: center;
+    padding: 10px;
+    border-bottom: 2px solid #ffffff;
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+}
+
+.status-panel {
+    width: 250px;
+    background-color: #252526;
+    border-right: 2px solid #333;
+    padding: 20px;
+}
+
+.analyzer-panel {
+    flex: 1;
+    background-color: #000000;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.generator-panel {
+    background-color: #252526;
+    padding: 15px;
+    border-top: 2px solid #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.controls-container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.control-group input, .control-group select {
+    background-color: #1e1e1e;
+    color: #00ff00;
+    font-family: 'Courier New', Courier, monospace;
+    border: 1px solid #555;
+    padding: 5px;
+    border-radius: 3px;
+    margin-top: 3px;
+    width: 120px;
+}
+
+.ctrl-btn {
+    background-color: #ff3333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.ctrl-btn.on {
+    background-color: #00cc00;
+    color: #000;
+}
+
+h1, h2 {
+    margin-top: 0;
+    font-size: 1.2rem;
+}
+
+.status-item {
+    margin-bottom: 15px;
+    background-color: #1e1e1e;
+    padding: 10px;
+    border-radius: 4px;
+    border-left: 4px solid #555;
+}
+
+.status-label {
+    display: block;
+    font-size: 0.85rem;
+    color: #aaaaaa;
+    margin-bottom: 5px;
+}
+
+.status-value {
+    display: block;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #00ff00;
+}
+
+.led-on { color: #00ff00; }
+.led-off { color: #ff3333; }
+
+/* ESTILOS DEL CHAT FLOTANTE */
+#chat-container {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    width: 340px;
+    background-color: #252526;
+    border: 2px solid #333;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    flex-direction: column;
+    transition: height 0.3s ease;
+    z-index: 1000;
+}
+.chat-closed { height: 40px; }
+.chat-open { height: 450px; }
+
+#chat-header {
+    background-color: #1e1e1e;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    border-radius: 6px 6px 0 0;
+    border-bottom: 2px solid #333;
+}
+#chat-toggle-btn { background: none; border: none; color: #00ff00; cursor: pointer; font-size: 1.2rem; }
+
+#chat-messages {
+    flex: 1; padding: 15px; overflow-y: auto; display: none; flex-direction: column; gap: 12px; background-color: #000;
+}
+.chat-open #chat-messages, .chat-open #chat-input-area { display: flex; }
+
+.msg-user { align-self: flex-end; background-color: #333; padding: 10px; border-radius: 8px; max-width: 85%; color: #fff; font-size: 0.9rem; }
+.msg-bot { align-self: flex-start; border-left: 3px solid #00ff00; background-color: #1a1a1a; padding: 10px; border-radius: 4px; max-width: 85%; color: #00ff00; font-family: 'Courier New', Courier, monospace; font-size: 0.9rem; }
+
+#chat-input-area {
+    display: none; padding: 10px; background-color: #1e1e1e; gap: 5px; border-top: 1px solid #333;
+}
+#chat-input {
+    flex: 1; background-color: #000; color: #00ff00; border: 1px solid #555; padding: 10px; border-radius: 4px; outline: none; font-family: 'Courier New', Courier, monospace;
+}
+#chat-send-btn { background-color: #333; color: #00ff00; border: 1px solid #555; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+.commits-panel {
+    margin-top: 30px;
+    border-top: 2px solid #333;
+    padding-top: 15px;
+}
+.commits-panel h3 {
+    font-size: 0.9rem;
+    color: #aaaaaa;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.commit-item {
+    background-color: #1e1e1e;
+    padding: 10px;
+    border-radius: 4px;
+    border-left: 3px solid #007acc;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+}
+.commit-author {
+    color: #007acc;
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+.commit-msg {
+    color: #dddddd;
+    font-style: italic;
+    margin-bottom: 3px;
+}
+.commit-date {
+    color: #777777;
+    font-size: 0.75rem;
+}
