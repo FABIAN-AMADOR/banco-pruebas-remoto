@@ -86,8 +86,34 @@ function setupListeners() {
         sendUpdate({ power: !currentStateOn });
     });
 
-    selectType.addEventListener('change', (e) => {
-        sendUpdate({ signal_type: e.target.value });
+    // === EVENTO DE TIPO DE SEÑAL CORREGIDO ===
+    selectType.addEventListener('change', async (e) => {
+        const val = e.target.value;
+        
+        // 1. Actualiza tu gráfica y panel local
+        sendUpdate({ signal_type: val });
+
+        // 2. Envía la orden al laboratorio central
+        const valoresPermitidos = ["senoidal", "cuadrada", "triangular"];
+        
+        if (valoresPermitidos.includes(val)) {
+            const payload = {
+                "tipo_senal": val,
+                "usuario": sessionStorage.getItem('banco_user') || "anonimo"
+            };
+            
+            console.log("🟡 Enviando tipo de señal al laboratorio...");
+            
+            const respuesta = await enviarOrdenCentral(payload);
+            
+            if (respuesta && !respuesta.error) {
+                console.log("🟢 Laboratorio actualizado (Señal)");
+            } else {
+                console.log("🔴 Error al comunicarse con el laboratorio");
+            }
+        } else {
+            console.warn("🔴 Tipo de señal no permitido");
+        }
     });
 
     // === EVENTO DE FRECUENCIA CORREGIDO ===
@@ -276,3 +302,5 @@ fetchAndUpdateInstrument();
 fetchCommits();
 setInterval(fetchAndUpdateInstrument, 1000);
 setInterval(fetchCommits, 2000);
+
+setupListeners()
