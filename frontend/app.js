@@ -1,3 +1,5 @@
+
+
 // 1. SOLICITAR NOMBRE AL VISITANTE
 let currentUser = sessionStorage.getItem('banco_user');
 if (!currentUser) {
@@ -95,10 +97,8 @@ function setupListeners() {
         const val = parseFloat(e.target.value);
         if (isNaN(val)) return;
 
-        // 1. Actualiza tu gráfica y panel local
         sendUpdate({ frequency: val });
 
-        // 2. Envía la orden al laboratorio central
         if (val >= 100 && val <= 10000) {
             const payload = {
                 "frecuencia_hz": val,
@@ -119,9 +119,33 @@ function setupListeners() {
         }
     });
 
-    inputAmp.addEventListener('change', (e) => {
+    // === EVENTO DE AMPLITUD CORREGIDO ===
+    inputAmp.addEventListener('change', async (e) => {
         const val = parseFloat(e.target.value);
-        if (!isNaN(val)) sendUpdate({ amplitude: val });
+        if (isNaN(val)) return;
+
+        // 1. Actualiza tu gráfica y panel local
+        sendUpdate({ amplitude: val });
+
+        // 2. Envía la orden al laboratorio central
+        if (val >= -30 && val <= 10) {
+            const payload = {
+                "amplitud_dbm": val,
+                "usuario": sessionStorage.getItem('banco_user') || "anonimo"
+            };
+            
+            console.log("🟡 Enviando orden de amplitud al laboratorio...");
+            
+            const respuesta = await enviarOrdenCentral(payload);
+            
+            if (respuesta && !respuesta.error) {
+                console.log("🟢 Laboratorio actualizado (Amplitud)");
+            } else {
+                console.log("🔴 Error al comunicarse con el laboratorio");
+            }
+        } else {
+            console.warn("🔴 Amplitud fuera de rango (-30 dBm a +10 dBm)");
+        }
     });
 }
 
@@ -203,7 +227,6 @@ async function sendChatMessage() {
         const response = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            // Se adjunta el usuario al mensaje del chat
             body: JSON.stringify({ message: text, usuario: currentUser }) 
         });
         const data = await response.json();
@@ -253,6 +276,5 @@ initSpectrumPlot();
 setupListeners();
 fetchAndUpdateInstrument();
 fetchCommits();
-setInterval(fetchAndUpdateInstrument, 1000); // Sondeo de instrumentos cada 1s
-setInterval(fetchCommits, 2000); // Sondeo del historial cada 2s
-
+setInterval(fetchAndUpdateInstrument, 1000);
+setInterval(fetchCommits, 2000);
