@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+import json
+import urllib.request
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
@@ -6,10 +8,6 @@ from typing import Optional
 from backend.state import current_state, operation_history, add_history
 from backend.synthesis import generate_spectrum
 from backend.assistant import process_chat_message
-import json
-import urllib.request
-from fastapi import Request
-
 
 app = FastAPI(title="Banco de Pruebas Remoto")
 
@@ -66,25 +64,16 @@ async def chat_endpoint(chat: ChatMessage):
 
 @app.get("/api/commits")
 async def get_history():
-    # Reutilizamos la ruta /api/commits para enviar la bitácora al frontend
     return operation_history
 
-app.mount("/static", StaticFiles(directory="frontend"), name="static")
-
-@app.get("/")
-async def root():
-    return RedirectResponse(url="/static/index.html")
-
-import json
-import urllib.request
-from fastapi import Request
-
+# ==========================================
+# PUENTE CON EL SISTEMA CENTRAL (GOOGLE)
+# ==========================================
 @app.post("/api/central")
 async def proxy_central(request: Request):
     payload = await request.json()
     url = "https://script.google.com/macros/s/AKfycbzqnGeKDXXL_D25oE31Ndo1yMJbjaW3yfb4jnIQUaoeKco5lWN1AYeMOADNXhAgeQP3/exec"
     
-    # Python enviará la petición POST directamente a Google
     req = urllib.request.Request(
         url, 
         data=json.dumps(payload).encode('utf-8'), 
@@ -97,3 +86,10 @@ async def proxy_central(request: Request):
             return json.loads(response.read().decode('utf-8'))
     except Exception as e:
         return {"error": str(e)}
+
+# El montaje de estáticos siempre debe ir al final
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/static/index.html")
