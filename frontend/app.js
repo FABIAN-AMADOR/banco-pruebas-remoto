@@ -1,7 +1,7 @@
 // 1. SOLICITAR NOMBRE AL VISITANTE
 let currentUser = sessionStorage.getItem('banco_user');
 if (!currentUser) {
-    currentUser = prompt("Bienvenido al Banco de Pruebas Remoto. Por favor, ingresa tu nombre:") || "Usuario Anónimo";
+    currentUser = prompt("Bienvenido al Banco de Pruebas Remoto. Por favor, ingresa tu nombre:") || "anonimo";
     sessionStorage.setItem('banco_user', currentUser);
 }
 
@@ -46,6 +46,8 @@ function formatFrequency(hz) {
 
 function initSpectrumPlot() {
     const plotDiv = document.getElementById('spectrum-plot');
+    if (!plotDiv) return;
+    
     const layout = {
         title: false,
         paper_bgcolor: '#000000',
@@ -59,17 +61,17 @@ function initSpectrumPlot() {
     Plotly.newPlot(plotDiv, initialData, layout, config);
 }
 
-// 3. ENVÍO DE COMANDOS MANUALES AL SERVIDOR
+// 3. ENVÍO DE COMANDOS AL SERVIDOR (LOCAL Y CENTRAL)
 async function sendUpdate(payload) {
-    payload.usuario = currentUser; // Se adjunta el nombre a la petición
+    payload.usuario = currentUser; 
     try {
         await fetch('/api/update', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        fetchAndUpdateInstrument(); // Actualizar panel de estado
-        fetchCommits(); // Actualizar historial de modificaciones
+        fetchAndUpdateInstrument(); 
+        fetchCommits(); 
     } catch (error) {
         console.error("Error al enviar comando:", error);
     }
@@ -80,97 +82,105 @@ function setupListeners() {
     const selectType = document.getElementById('select-type');
     const inputFreq = document.getElementById('input-freq');
     const inputAmp = document.getElementById('input-amp');
+    const inputBw = document.getElementById('input-bw'); // Preparado para Ancho de Banda
 
-    btnPower.addEventListener('click', () => {
-        const currentStateOn = btnPower.classList.contains('on');
-        sendUpdate({ power: !currentStateOn });
-    });
+    if (btnPower) {
+        btnPower.addEventListener('click', () => {
+            const currentStateOn = btnPower.classList.contains('on');
+            sendUpdate({ power: !currentStateOn });
+        });
+    }
 
-    // === EVENTO DE TIPO DE SEÑAL CORREGIDO ===
-    selectType.addEventListener('change', async (e) => {
-        const val = e.target.value;
-        
-        // 1. Actualiza tu gráfica y panel local
-        sendUpdate({ signal_type: val });
+    // === TIPO DE SEÑAL (ETAPA 7) ===
+    if (selectType) {
+        selectType.addEventListener('change', async (e) => {
+            const val = e.target.value;
+            sendUpdate({ signal_type: val });
 
-        // 2. Envía la orden al laboratorio central
-        const valoresPermitidos = ["senoidal", "cuadrada", "triangular"];
-        
-        if (valoresPermitidos.includes(val)) {
-            const payload = {
-                "tipo_senal": val,
-                "usuario": sessionStorage.getItem('banco_user') || "anonimo"
-            };
-            
-            console.log("🟡 Enviando tipo de señal al laboratorio...");
-            
-            const respuesta = await enviarOrdenCentral(payload);
-            
-            if (respuesta && !respuesta.error) {
-                console.log("🟢 Laboratorio actualizado (Señal)");
+            const valoresPermitidos = ["senoidal", "cuadrada", "triangular"];
+            if (valoresPermitidos.includes(val)) {
+                const payload = {
+                    "tipo_senal": val,
+                    "usuario": sessionStorage.getItem('banco_user') || "anonimo"
+                };
+                console.log("🟡 Enviando tipo de señal al laboratorio...");
+                const respuesta = await enviarOrdenCentral(payload);
+                if (respuesta && !respuesta.error) console.log("🟢 Laboratorio actualizado (Señal)");
+                else console.log("🔴 Error al comunicarse con el laboratorio");
             } else {
-                console.log("🔴 Error al comunicarse con el laboratorio");
+                console.warn("🔴 Tipo de señal no permitido");
             }
-        } else {
-            console.warn("🔴 Tipo de señal no permitido");
-        }
-    });
+        });
+    }
 
-    // === EVENTO DE FRECUENCIA CORREGIDO ===
-    inputFreq.addEventListener('change', async (e) => {
-        const val = parseFloat(e.target.value);
-        if (isNaN(val)) return;
+    // === FRECUENCIA (ETAPA 4) ===
+    if (inputFreq) {
+        inputFreq.addEventListener('change', async (e) => {
+            const val = parseFloat(e.target.value);
+            if (isNaN(val)) return;
 
-        sendUpdate({ frequency: val });
+            sendUpdate({ frequency: val });
 
-        if (val >= 100 && val <= 10000) {
-            const payload = {
-                "frecuencia_hz": val,
-                "usuario": sessionStorage.getItem('banco_user') || "anonimo"
-            };
-            
-            console.log("🟡 Enviando orden al laboratorio...");
-            
-            const respuesta = await enviarOrdenCentral(payload);
-            
-            if (respuesta && !respuesta.error) {
-                console.log("🟢 Laboratorio actualizado");
+            if (val >= 100 && val <= 10000) {
+                const payload = {
+                    "frecuencia_hz": val,
+                    "usuario": sessionStorage.getItem('banco_user') || "anonimo"
+                };
+                console.log("🟡 Enviando frecuencia al laboratorio...");
+                const respuesta = await enviarOrdenCentral(payload);
+                if (respuesta && !respuesta.error) console.log("🟢 Laboratorio actualizado (Frecuencia)");
+                else console.log("🔴 Error al comunicarse con el laboratorio");
             } else {
-                console.log("🔴 Error al comunicarse con el laboratorio");
+                console.warn("🔴 Frecuencia fuera de rango (100 Hz - 10000 Hz)");
             }
-        } else {
-            console.warn("🔴 Frecuencia fuera de rango (100 Hz - 10000 Hz)");
-        }
-    });
+        });
+    }
 
-    // === EVENTO DE AMPLITUD CORREGIDO ===
-    inputAmp.addEventListener('change', async (e) => {
-        const val = parseFloat(e.target.value);
-        if (isNaN(val)) return;
+    // === AMPLITUD (ETAPA 5) ===
+    if (inputAmp) {
+        inputAmp.addEventListener('change', async (e) => {
+            const val = parseFloat(e.target.value);
+            if (isNaN(val)) return;
 
-        // 1. Actualiza tu gráfica y panel local
-        sendUpdate({ amplitude: val });
+            sendUpdate({ amplitude: val });
 
-        // 2. Envía la orden al laboratorio central
-        if (val >= -30 && val <= 10) {
-            const payload = {
-                "amplitud_dbm": val,
-                "usuario": sessionStorage.getItem('banco_user') || "anonimo"
-            };
-            
-            console.log("🟡 Enviando orden de amplitud al laboratorio...");
-            
-            const respuesta = await enviarOrdenCentral(payload);
-            
-            if (respuesta && !respuesta.error) {
-                console.log("🟢 Laboratorio actualizado (Amplitud)");
+            if (val >= -30 && val <= 10) {
+                const payload = {
+                    "amplitud_dbm": val,
+                    "usuario": sessionStorage.getItem('banco_user') || "anonimo"
+                };
+                console.log("🟡 Enviando amplitud al laboratorio...");
+                const respuesta = await enviarOrdenCentral(payload);
+                if (respuesta && !respuesta.error) console.log("🟢 Laboratorio actualizado (Amplitud)");
+                else console.log("🔴 Error al comunicarse con el laboratorio");
             } else {
-                console.log("🔴 Error al comunicarse con el laboratorio");
+                console.warn("🔴 Amplitud fuera de rango (-30 dBm a +10 dBm)");
             }
-        } else {
-            console.warn("🔴 Amplitud fuera de rango (-30 dBm a +10 dBm)");
-        }
-    });
+        });
+    }
+
+    // === ANCHO DE BANDA (ETAPA 6) ===
+    if (inputBw) {
+        inputBw.addEventListener('change', async (e) => {
+            const val = parseFloat(e.target.value);
+            if (isNaN(val)) return;
+
+            sendUpdate({ bandwidth: val });
+
+            if (val >= 50 && val <= 1000) {
+                const payload = {
+                    "ancho_banda_hz": val,
+                    "usuario": sessionStorage.getItem('banco_user') || "anonimo"
+                };
+                console.log("🟡 Enviando ancho de banda al laboratorio...");
+                const respuesta = await enviarOrdenCentral(payload);
+                if (respuesta && !respuesta.error) console.log("🟢 Laboratorio actualizado (Ancho de Banda)");
+                else console.log("🔴 Error al comunicarse con el laboratorio");
+            } else {
+                console.warn("🔴 Ancho de banda fuera de rango (50 Hz - 1000 Hz)");
+            }
+        });
+    }
 }
 
 // 4. ACTUALIZACIÓN DEL ESTADO Y ESPECTRO (POLLING)
@@ -180,38 +190,44 @@ async function fetchAndUpdateInstrument() {
         const state = await stateRes.json();
 
         const powerEl = document.getElementById("val-power");
-        powerEl.textContent = state.power ? "ENCENDIDO" : "APAGADO";
-        powerEl.className = state.power ? "status-value led-on" : "status-value led-off";
+        if(powerEl) {
+            powerEl.textContent = state.power ? "ENCENDIDO" : "APAGADO";
+            powerEl.className = state.power ? "status-value led-on" : "status-value led-off";
+        }
 
-        document.getElementById("val-type").textContent = state.signal_type;
-        document.getElementById("val-freq").textContent = formatFrequency(state.frequency);
-        document.getElementById("val-amp").textContent = state.amplitude + " dBm";
-        document.getElementById("val-bw").textContent = formatFrequency(state.bandwidth);
+        if(document.getElementById("val-type")) document.getElementById("val-type").textContent = state.signal_type;
+        if(document.getElementById("val-freq")) document.getElementById("val-freq").textContent = formatFrequency(state.frequency);
+        if(document.getElementById("val-amp")) document.getElementById("val-amp").textContent = state.amplitude + " dBm";
+        if(document.getElementById("val-bw")) document.getElementById("val-bw").textContent = formatFrequency(state.bandwidth);
 
         const btnPower = document.getElementById('btn-power');
-        btnPower.textContent = state.power ? "ENCENDIDO" : "APAGADO";
-        btnPower.className = state.power ? "ctrl-btn on" : "ctrl-btn off";
+        if(btnPower) {
+            btnPower.textContent = state.power ? "ENCENDIDO" : "APAGADO";
+            btnPower.className = state.power ? "ctrl-btn on" : "ctrl-btn off";
+        }
         
-        if (document.activeElement !== document.getElementById('select-type')) {
-            document.getElementById('select-type').value = state.signal_type;
-        }
-        if (document.activeElement !== document.getElementById('input-freq')) {
-            document.getElementById('input-freq').value = state.frequency;
-        }
-        if (document.activeElement !== document.getElementById('input-amp')) {
-            document.getElementById('input-amp').value = state.amplitude;
-        }
+        const uiType = document.getElementById('select-type');
+        const uiFreq = document.getElementById('input-freq');
+        const uiAmp = document.getElementById('input-amp');
+        const uiBw = document.getElementById('input-bw');
+
+        if (uiType && document.activeElement !== uiType) uiType.value = state.signal_type;
+        if (uiFreq && document.activeElement !== uiFreq) uiFreq.value = state.frequency;
+        if (uiAmp && document.activeElement !== uiAmp) uiAmp.value = state.amplitude;
+        if (uiBw && document.activeElement !== uiBw) uiBw.value = state.bandwidth;
 
         const spectrumRes = await fetch('/api/spectrum');
         const spectrum = await spectrumRes.json();
         const plotDiv = document.getElementById('spectrum-plot');
         
-        Plotly.react(plotDiv, [{
-            x: spectrum.x,
-            y: spectrum.y,
-            type: 'scatter',
-            line: { color: '#00ff00', width: 1.5 }
-        }], plotDiv.layout);
+        if (plotDiv) {
+            Plotly.react(plotDiv, [{
+                x: spectrum.x,
+                y: spectrum.y,
+                type: 'scatter',
+                line: { color: '#00ff00', width: 1.5 }
+            }], plotDiv.layout);
+        }
 
     } catch (error) {
         console.error("Error de comunicación:", error);
@@ -226,13 +242,16 @@ const chatMessages = document.getElementById('chat-messages');
 const chatInput = document.getElementById('chat-input');
 const chatSendBtn = document.getElementById('chat-send-btn');
 
-chatHeader.addEventListener('click', () => {
-    chatContainer.classList.toggle('chat-open');
-    chatContainer.classList.toggle('chat-closed');
-    chatToggleBtn.textContent = chatContainer.classList.contains('chat-open') ? '▼' : '▲';
-});
+if (chatHeader) {
+    chatHeader.addEventListener('click', () => {
+        chatContainer.classList.toggle('chat-open');
+        chatContainer.classList.toggle('chat-closed');
+        chatToggleBtn.textContent = chatContainer.classList.contains('chat-open') ? '▼' : '▲';
+    });
+}
 
 function appendMessage(sender, text) {
+    if(!chatMessages) return;
     const div = document.createElement('div');
     div.className = sender === 'user' ? 'msg-user' : 'msg-bot';
     div.textContent = text;
@@ -241,6 +260,7 @@ function appendMessage(sender, text) {
 }
 
 async function sendChatMessage() {
+    if(!chatInput) return;
     const text = chatInput.value.trim();
     if (!text) return;
 
@@ -263,10 +283,12 @@ async function sendChatMessage() {
     }
 }
 
-chatSendBtn.addEventListener('click', sendChatMessage);
-chatInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendChatMessage();
-});
+if (chatSendBtn) chatSendBtn.addEventListener('click', sendChatMessage);
+if (chatInput) {
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendChatMessage();
+    });
+}
 
 // 6. CARGAR HISTORIAL DE OPERACIONES (BITÁCORA)
 async function fetchCommits() {
@@ -274,6 +296,7 @@ async function fetchCommits() {
         const res = await fetch('/api/commits');
         const commits = await res.json();
         const list = document.getElementById('commits-list');
+        if(!list) return;
         
         if (commits.length === 0) {
             list.innerHTML = '<div class="commit-item">No hay operaciones recientes.</div>';
@@ -300,7 +323,5 @@ initSpectrumPlot();
 setupListeners();
 fetchAndUpdateInstrument();
 fetchCommits();
-setInterval(fetchAndUpdateInstrument, 1000);
+setInterval(fetchAndUpdateInstrument, 1000); 
 setInterval(fetchCommits, 2000);
-
-setupListeners()
