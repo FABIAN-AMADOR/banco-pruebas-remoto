@@ -200,3 +200,61 @@ h1, h2 {
     color: #777777;
     font-size: 0.75rem;
 }
+
+/* =========================================
+   LAYOUT 50/50 Y AGENTE IA
+   ========================================= */
+body {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #0B1120; /* Fondo oscuro principal */
+    color: #ffffff;
+}
+
+/* Mitad izquierda: Agente */
+.agent-panel {
+    width: 50vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid rgba(34, 211, 238, 0.2);
+    background: radial-gradient(circle at center, #111827 0%, #0B1120 100%);
+}
+
+.avatar-container {
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 15px rgba(34, 211, 238, 0.4)); /* Brillo holográfico cyan */
+}
+
+/* Animación autónoma de parpadeo */
+.eye {
+    transform-origin: center;
+    animation: blink 4s infinite;
+}
+
+@keyframes blink {
+    0%, 96%, 98%, 100% { transform: scaleY(1); }
+    97% { transform: scaleY(0.1); }
+}
+
+.agent-status {
+    font-family: 'Inter', sans-serif;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* Mitad derecha: El laboratorio */
+.lab-panel {
+    width: 50vw;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 15px;
+    box-sizing: border-box;
+}
