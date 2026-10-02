@@ -22,41 +22,17 @@
         <div class="agent-status" id="agent-status-text">Agente en reposo...</div>
     </div>
 
-    <!-- MITAD DERECHA: TU LABORATORIO COMPLETO -->
-    <div class="lab-panel">
-        <header class="header">
-            <h1>BANCO DE PRUEBAS REMOTO</h1>
-        </header>
-        
-        <main class="main-container">
-            <aside class="status-panel">
-                <h2>ESTADO DEL GENERADOR</h2>
-                <div class="status-item">
-                    <span class="status-label">Estado:</span>
-                    <span id="val-power" class="status-value led-off">APAGADO</span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Tipo de señal:</span>
-                    <span id="val-type" class="status-value">---</span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Frecuencia:</span>
-                    <span id="val-freq" class="status-value">---</span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Amplitud:</span>
-                    <span id="val-amp" class="status-value">---</span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Ancho de banda:</span>
-                    <span id="val-bw" class="status-value">---</span>
-                </div>
-            </aside>
-            <section class="analyzer-panel">
-                <h2>ANALIZADOR DE ESPECTROS</h2>
-                <div id="spectrum-plot" style="width: 100%; height: 100%; min-height: 400px;"></div>
-            </section>
-        </main>
+    <!-- MITAD DERECHA: LABORATORIO VIRTUAL INCRUSTADO -->
+    <div class="lab-panel" style="padding: 0; overflow: hidden; background-color: #000;">
+        <iframe 
+            src="https://lab-com-virtual.vercel.app/" 
+            width="100%" 
+            height="100%" 
+            style="border: none;" 
+            title="Laboratorio Virtual Externo"
+            allow="microphone; camera"
+        ></iframe>
+    </div>
         
         <footer class="generator-panel">
             <h2>GENERADOR DE SEÑALES - CONTROLES</h2>
