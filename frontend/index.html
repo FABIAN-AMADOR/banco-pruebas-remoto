@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Pruebas Remoto</title>
+    <!-- Esta línea es la que evita que se vea blanco -->
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
 <body>
     <!-- NUEVA MITAD IZQUIERDA: EL AGENTE IA -->
     <div class="agent-panel">
@@ -12,7 +22,7 @@
         <div class="agent-status" id="agent-status-text">Agente en reposo...</div>
     </div>
 
-    <!-- MITAD DERECHA: TU LABORATORIO ACTUAL -->
+    <!-- MITAD DERECHA: TU LABORATORIO COMPLETO -->
     <div class="lab-panel">
         <header class="header">
             <h1>BANCO DE PRUEBAS REMOTO</h1>
@@ -20,9 +30,27 @@
         
         <main class="main-container">
             <aside class="status-panel">
-                <!-- Deja todo tu panel de estado intacto aquí -->
                 <h2>ESTADO DEL GENERADOR</h2>
-                <!-- ... tus divs de estado ... -->
+                <div class="status-item">
+                    <span class="status-label">Estado:</span>
+                    <span id="val-power" class="status-value led-off">APAGADO</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Tipo de señal:</span>
+                    <span id="val-type" class="status-value">---</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Frecuencia:</span>
+                    <span id="val-freq" class="status-value">---</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Amplitud:</span>
+                    <span id="val-amp" class="status-value">---</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Ancho de banda:</span>
+                    <span id="val-bw" class="status-value">---</span>
+                </div>
             </aside>
             <section class="analyzer-panel">
                 <h2>ANALIZADOR DE ESPECTROS</h2>
@@ -31,12 +59,33 @@
         </main>
         
         <footer class="generator-panel">
-            <!-- Deja tus controles intactos aquí -->
             <h2>GENERADOR DE SEÑALES - CONTROLES</h2>
-            <!-- ... tus botones e inputs ... -->
+            <div class="controls-container">
+                <button id="btn-power" class="ctrl-btn off">APAGADO</button>
+                <div class="control-group">
+                    <label for="select-type">Tipo de Señal:</label>
+                    <select id="select-type">
+                        <option value="senoidal">Senoidal</option>
+                        <option value="cuadrada">Cuadrada</option>
+                        <option value="triangular">Triangular</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="input-freq">Frecuencia (Hz):</label>
+                    <input type="number" id="input-freq" value="1000000" step="50000" min="100" max="10000">
+                </div>
+                <div class="control-group">
+                    <label for="input-amp">Amplitud (dBm):</label>
+                    <input type="number" id="input-amp" value="-10" step="1" min="-30" max="10">
+                </div>
+                <div class="control-group">
+                    <label for="input-bw">Ancho de Banda (Hz):</label>
+                    <input type="number" id="input-bw" value="100" step="10" min="50" max="1000">
+                </div>
+            </div>
         </footer>
     </div>
 
-    <!-- Tu script actual, sin tocar -->
     <script src="app.js"></script>
 </body>
+</html>
