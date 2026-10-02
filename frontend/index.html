@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banco de Pruebas Remoto</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
-</head>
-<body>
 <body>
     <!-- NUEVA MITAD IZQUIERDA: EL AGENTE IA -->
     <div class="agent-panel">
@@ -22,23 +12,31 @@
         <div class="agent-status" id="agent-status-text">Agente en reposo...</div>
     </div>
 
-    <!-- MITAD DERECHA: TU LABORATORIO ACTUAL (Envuélvelo todo aquí) -->
+    <!-- MITAD DERECHA: TU LABORATORIO ACTUAL -->
     <div class="lab-panel">
         <header class="header">
             <h1>BANCO DE PRUEBAS REMOTO</h1>
         </header>
         
-        <!-- Aquí sigue exactamente tu <main class="main-container">, el aside, los controles, etc. -->
         <main class="main-container">
-            <!-- (Deja todo tu código de controles y gráficas intacto aquí) -->
+            <aside class="status-panel">
+                <!-- Deja todo tu panel de estado intacto aquí -->
+                <h2>ESTADO DEL GENERADOR</h2>
+                <!-- ... tus divs de estado ... -->
+            </aside>
+            <section class="analyzer-panel">
+                <h2>ANALIZADOR DE ESPECTROS</h2>
+                <div id="spectrum-plot" style="width: 100%; height: 100%; min-height: 400px;"></div>
+            </section>
         </main>
         
         <footer class="generator-panel">
-            <!-- (Deja tus controles intactos aquí) -->
+            <!-- Deja tus controles intactos aquí -->
+            <h2>GENERADOR DE SEÑALES - CONTROLES</h2>
+            <!-- ... tus botones e inputs ... -->
         </footer>
     </div>
 
-    <!-- Tu script actual -->
+    <!-- Tu script actual, sin tocar -->
     <script src="app.js"></script>
 </body>
-</html>
