@@ -368,3 +368,90 @@ initAvatarAnimation(); // <-- Agrega esta línea aquí
 setInterval(fetchAndUpdateInstrument, 1000); 
 setInterval(fetchCommits, 2000);
 
+// ==========================================
+// FASE 3: MOTOR DE VOZ Y SINCRONIZACIÓN LABIAL
+// ==========================================
+function initVoiceAgent() {
+    const btnMic = document.getElementById('btn-mic');
+    const statusText = document.getElementById('agent-status-text');
+    const svgEyes = document.getElementById('agent-eyes');
+    const btnPower = document.getElementById('btn-power-manual');
+
+    // 1. Configurar STT (Speech to Text - Reconocimiento nativo)
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        statusText.textContent = "Tu navegador no soporta voz.";
+        return;
+    }
+    
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'es-ES';
+    recognition.interimResults = false;
+
+    // Al hacer clic en el micrófono
+    btnMic.addEventListener('click', () => {
+        try {
+            recognition.start();
+            btnMic.classList.add('listening');
+            statusText.textContent = "Escuchando...";
+        } catch (e) {
+            console.log("El micrófono ya está activo.");
+        }
+    });
+
+    // Cuando detecta lo que dijiste
+    recognition.onresult = (event) => {
+        const command = event.results[0][0].transcript.toLowerCase();
+        btnMic.classList.remove('listening');
+        statusText.textContent = `Entendido: "${command}"`;
+        
+        // Mini-motor lógico temporal para probar interacción
+        let reply = "No entendí la instrucción, pero sigo procesando.";
+        
+        if (command.includes("encender") || command.includes("enciende")) {
+            reply = "Secuencia de encendido iniciada. Activando el generador.";
+            btnPower.textContent = "⚡ Apagar Lab";
+            btnPower.style.borderColor = "#EF4444"; // Cambia a rojo
+        } else if (command.includes("apagar") || command.includes("apaga")) {
+            reply = "Apagando el laboratorio de inmediato.";
+            btnPower.textContent = "⚡ Encender Lab";
+            btnPower.style.borderColor = "#10B981"; // Vuelve a verde
+        } else if (command.includes("frecuencia")) {
+            reply = "Voy a preparar la modulación de frecuencia. Quedo a la espera de los parámetros numéricos.";
+        }
+        
+        // Hacer hablar al agente
+        speakAgent(reply, svgEyes, statusText);
+    };
+
+    recognition.onerror = () => {
+        btnMic.classList.remove('listening');
+        statusText.textContent = "Error o silencio detectado.";
+    };
+}
+
+// 2. Configurar TTS (Text to Speech) y vibración de ojos
+function speakAgent(text, svgEyes, statusText) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    utterance.rate = 1.05; // Velocidad ligeramente robótica/ágil
+    utterance.pitch = 1;
+
+    // Simular sincronización labial cambiando la escala Y rápidamente
+    let lipSyncInterval = setInterval(() => {
+        const scale = Math.random() * 0.7 + 0.3; // Escala entre 0.3 y 1.0
+        svgEyes.style.transform = `scaleY(${scale})`;
+    }, 100);
+
+    // Cuando termina de hablar, limpiar la animación
+    utterance.onend = () => {
+        clearInterval(lipSyncInterval);
+        svgEyes.style.transform = `scaleY(1)`; // Reposo
+        statusText.textContent = "Agente en reposo...";
+    };
+
+    window.speechSynthesis.speak(utterance);
+}
+
+// Ejecutar la función al cargar
+initVoiceAgent();

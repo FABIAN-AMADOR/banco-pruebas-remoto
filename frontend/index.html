@@ -9,17 +9,28 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <!-- NUEVA MITAD IZQUIERDA: EL AGENTE IA -->
+   <!-- NUEVA MITAD IZQUIERDA: EL AGENTE IA -->
     <div class="agent-panel">
+        <!-- Espacio para Logos -->
+        <div class="logos-container">
+            <div class="logo-placeholder">Logo 1</div>
+            <div class="logo-placeholder">Logo 2</div>
+        </div>
+
+        <!-- Avatar IA -->
         <div class="avatar-container">
             <svg id="agent-eyes" viewBox="0 0 100 50" width="150" height="75">
-                <!-- Ojo Izquierdo -->
                 <rect class="eye" x="20" y="10" width="20" height="30" rx="10" fill="#22D3EE" />
-                <!-- Ojo Derecho -->
                 <rect class="eye" x="60" y="10" width="20" height="30" rx="10" fill="#22D3EE" />
             </svg>
         </div>
         <div class="agent-status" id="agent-status-text">Agente en reposo...</div>
+
+        <!-- Controles Manuales Neón -->
+        <div class="agent-controls">
+            <button id="btn-mic" class="neon-btn cyan-glow">🎤 Hablar con IA</button>
+            <button id="btn-power-manual" class="neon-btn green-glow">⚡ Encender Lab</button>
+        </div>
     </div>
 
     <!-- MITAD DERECHA: LABORATORIO VIRTUAL INCRUSTADO -->
