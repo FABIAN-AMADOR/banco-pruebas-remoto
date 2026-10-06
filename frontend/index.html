@@ -7,31 +7,45 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- MITAD IZQUIERDA: EL AGENTE IA -->
+    <!-- MITAD IZQUIERDA: EL AGENTE IA Y HARDWARE -->
     <div class="agent-panel">
         <!-- Espacio para Logos -->
         <div class="logos-container">
             <div class="logo-placeholder">Logo 1</div>
-            <!-- Reemplaza 'nombre-de-tu-imagen.png' por el archivo que tienes en tu carpeta -->
-            <img src="nombre-de-tu-imagen.png" alt="Logo Derecho" class="logo-img">
+            <img src="tu-logo-2.png" alt="Logo Derecho" class="logo-img">
         </div>
 
-        <!-- Avatar IA -->
+        <!-- Avatar IA (Movido hacia arriba por CSS) -->
         <div class="avatar-container">
-            <svg id="agent-eyes" viewBox="0 0 100 50" width="150" height="75">
+            <svg id="agent-eyes" viewBox="0 0 100 50" width="120" height="60">
                 <rect class="eye" x="20" y="10" width="20" height="30" rx="10" fill="#22D3EE" />
                 <rect class="eye" x="60" y="10" width="20" height="30" rx="10" fill="#22D3EE" />
             </svg>
         </div>
         <div class="agent-status" id="agent-status-text">Agente en reposo...</div>
 
-        <!-- Controles Manuales Neón -->
+        <!-- NUEVO: Consola de Hardware Físico -->
+        <div class="hardware-console">
+            <!-- Sección Vertical (Botones CH1, CH2, etc.) -->
+            <div class="hard-section">
+                <div class="hard-btn ch-btn" id="btn-ch1" onclick="toggleHardBtn(this)"></div>
+                <div class="hard-btn ch-btn" id="btn-ch2" onclick="toggleHardBtn(this)"></div>
+                <div class="hard-btn ch-btn" id="btn-ch3" onclick="toggleHardBtn(this)"></div>
+            </div>
+
+            <!-- Sección de Perillas (Knobs) -->
+            <div class="hard-section">
+                <div class="hard-knob" id="knob-vertical" title="Gira con la rueda del ratón"></div>
+                <div class="hard-knob" id="knob-horizontal" title="Gira con la rueda del ratón"></div>
+            </div>
+        </div>
+
+        <!-- Controles Manuales Neón (Conservados abajo) -->
         <div class="agent-controls">
-            <button id="btn-mic" class="neon-btn cyan-glow">🎤 Hablar con IA</button>
-            <button id="btn-power-manual" class="neon-btn green-glow">⚡ Encender Lab</button>
+            <button id="btn-mic" class="neon-btn cyan-glow">🎤 Hablar</button>
+            <button id="btn-power-manual" class="neon-btn green-glow">⚡ Encender</button>
         </div>
     </div>
-
     <!-- MITAD DERECHA: LABORATORIO VIRTUAL INCRUSTADO -->
     <div class="lab-panel" style="padding: 0; overflow: hidden; background-color: #000;">
         <iframe 
