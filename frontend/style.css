@@ -251,8 +251,8 @@ body {
     top: 30px;
     width: 100%;
     display: flex;
-    justify-content: space-between; /* Esto empuja Logo 1 a la izquierda y Logo 2 a la derecha */
-    padding: 0 20px;
+   /* justify-content: space-between; /* Esto empuja Logo 1 a la izquierda y Logo 2 a la derecha */
+    padding: 0 40px;
     box-sizing: border-box;
     z-index: 10;
 }
