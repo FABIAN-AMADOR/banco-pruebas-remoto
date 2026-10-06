@@ -71,84 +71,7 @@ body {
     width: 120px;
 }
 
-/* Botones Base del Generador (Futuristas) */
-.ctrl-btn {
-    background: rgba(30, 30, 30, 0.6);
-    color: #ffffff;
-    border: 1px solid #555;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: bold;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    backdrop-filter: blur(4px); /* Efecto cristal */
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
 
-.ctrl-btn:hover {
-    border-color: #888;
-    transform: translateY(-2px);
-}
-
-/* Estado Encendido (Brillo Verde) */
-.ctrl-btn.on {
-    background: rgba(0, 204, 0, 0.1);
-    color: #00ff00;
-    border-color: #00ff00;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2), inset 0 0 5px rgba(0, 255, 0, 0.1);
-}
-
-/* Estado Apagado (Brillo Rojo) */
-.ctrl-btn.off {
-    background: rgba(255, 51, 51, 0.1);
-    color: #ff3333;
-    border-color: #ff3333;
-    box-shadow: 0 0 10px rgba(255, 51, 51, 0.2), inset 0 0 5px rgba(255, 51, 51, 0.1);
-}
-
-/* ----------------------------------------- */
-/* Botones Especiales del Agente IA (Neón) */
-/* ----------------------------------------- */
-.neon-btn {
-    background: transparent;
-    color: #fff;
-    border: 2px solid;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-}
-
-.cyan-glow {
-    border-color: #22D3EE;
-    box-shadow: 0 0 10px rgba(34, 211, 238, 0.2), inset 0 0 10px rgba(34, 211, 238, 0.1);
-    color: #22D3EE;
-}
-
-.cyan-glow:hover {
-    background: rgba(34, 211, 238, 0.15);
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.6), inset 0 0 15px rgba(34, 211, 238, 0.4);
-    text-shadow: 0 0 8px rgba(34, 211, 238, 0.8);
-}
-
-.green-glow {
-    border-color: #10B981;
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2), inset 0 0 10px rgba(16, 185, 129, 0.1);
-    color: #10B981;
-}
-
-.green-glow:hover {
-    background: rgba(16, 185, 129, 0.15);
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.6), inset 0 0 15px rgba(16, 185, 129, 0.4);
-    text-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
-}
 h1, h2 {
     margin-top: 0;
     font-size: 1.2rem;
@@ -328,25 +251,20 @@ body {
     top: 30px;
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between; /* Esto empuja Logo 1 a la izquierda y Logo 2 a la derecha */
     padding: 0 40px;
     box-sizing: border-box;
+    z-index: 10;
 }
 
-.logo-placeholder {
+.logo-img {
     width: 80px;
     height: 80px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px dashed rgba(34, 211, 238, 0.4);
+    object-fit: contain; /* Evita que tu imagen se deforme o estire */
     border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 0.8rem;
-    /* Para usar tus imágenes reales, cambia el background por: 
-       background-image: url('ruta/logo.png'); background-size: contain; */
+    filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.3)); /* Resplandor cyan sutil */
 }
+
 
 .agent-controls {
     margin-top: 50px;
