@@ -251,10 +251,22 @@ body {
     top: 30px;
     width: 100%;
     display: flex;
-   /* justify-content: space-between; /* Esto empuja Logo 1 a la izquierda y Logo 2 a la derecha */
-    padding: 0 40px;
+    justify-content: space-between; /* Esto empuja Logo 1 a la izquierda y Logo 2 a la derecha */
+    padding: 0 20px;
     box-sizing: border-box;
     z-index: 10;
+}
+
+.logo-flotante-derecha {
+    position: absolute;
+    top: 20px;       /* Distancia desde la parte superior de la pantalla */
+    right: 30px;     /* Distancia desde la esquina derecha de la pantalla */
+    width: 60px;     /* Ancho del logo (ajustalo a tu gusto) */
+    height: 60px;    /* Alto del logo */
+    object-fit: contain;
+    z-index: 1000;   /* Asegura que flote por encima del iframe de Vercel */
+    filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.4));
+    pointer-events: none; /* Permite hacer clic en los elementos de Vercel que estén detrás si es necesario */
 }
 
 .logo-img {
