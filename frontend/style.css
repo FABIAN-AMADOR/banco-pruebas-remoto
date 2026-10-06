@@ -206,9 +206,92 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-top: 80px;
     border-right: 1px solid rgba(34, 211, 238, 0.2);
     background: radial-gradient(circle at center, #111827 0%, #0B1120 100%);
+}
+
+/* =========================================
+   CONSOLA DE HARDWARE FÍSICO
+   ========================================= */
+.hardware-console {
+    display: flex;
+    gap: 30px;
+    margin-top: 30px;
+    padding: 25px;
+    background: linear-gradient(145deg, #1e1e24, #151519); /* Gris textura plástico */
+    border-radius: 12px;
+    border: 2px solid #333;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 2px 2px rgba(255,255,255,0.1);
+}
+
+.hard-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+/* 1. Botones Cuadrados (Tipo CH1, CH2) */
+.hard-btn {
+    width: 45px;
+    height: 35px;
+    background-color: #444; /* Color base si no hay imagen */
+    border-radius: 6px;
+    box-shadow: 0 6px 0 #111, 0 8px 10px rgba(0,0,0,0.5); /* Efecto 3D sin presionar */
+    cursor: pointer;
+    transition: all 0.1s ease; /* Transición rápida para que se sienta físico */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+/* AQUÍ PONES TUS IMÁGENES RECORTE DE LOS BOTONES */
+#btn-ch1 { background-image: url('ruta-a-tu-imagen-ch1.png'); }
+#btn-ch2 { background-image: url('ruta-a-tu-imagen-ch2.png'); }
+#btn-ch3 { background-image: url('ruta-a-tu-imagen-ch3.png'); }
+
+/* Gesto de oprimir e Iluminación */
+.hard-btn:active, .hard-btn.pressed {
+    transform: translateY(6px); /* El botón se hunde físicamente */
+    box-shadow: 0 0 0 #111, 0 0 20px rgba(16, 185, 129, 0.9); /* Luz verde brillante (LED) */
+    /* Si quieres que alumbre de otro color, cambia el rgba (ej. cyan: rgba(34, 211, 238, 0.9)) */
+}
+
+/* 2. Perillas (Knobs) */
+.hard-knob {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #ddd; /* Color base gris claro */
+    box-shadow: inset 0 -5px 10px rgba(0,0,0,0.3), 0 8px 15px rgba(0,0,0,0.6);
+    cursor: grab;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    transform-origin: center center;
+    transition: transform 0.1s linear;
+}
+
+.hard-knob:active {
+    cursor: grabbing;
+}
+
+/* AQUÍ PONES TUS IMÁGENES RECORTE DE LAS PERILLAS */
+#knob-vertical { background-image: url('ruta-a-tu-imagen-knob1.png'); }
+#knob-horizontal { background-image: url('ruta-a-tu-imagen-knob2.png'); }
+
+/* Indicador visual temporal (una rayita) por si aún no pones la imagen */
+.hard-knob::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 28px;
+    width: 4px;
+    height: 15px;
+    background-color: #333;
+    border-radius: 2px;
 }
 
 .avatar-container {

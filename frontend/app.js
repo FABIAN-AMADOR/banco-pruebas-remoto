@@ -455,3 +455,50 @@ function speakAgent(text, svgEyes, statusText) {
 
 // Ejecutar la función al cargar
 initVoiceAgent();
+
+// ==========================================
+// CONTROL DE HARDWARE FÍSICO SIMULADO
+// ==========================================
+
+// 1. Simular presionar un botón (Se hunde y se ilumina)
+window.toggleHardBtn = function(btn) {
+    // Alterna la clase 'pressed' que activa la luz LED en CSS
+    btn.classList.toggle('pressed');
+    
+    // Aquí a futuro enviaremos la orden al backend:
+    // if(btn.classList.contains('pressed')) sendUpdate({...});
+    console.log("Botón presionado:", btn.id);
+};
+
+// 2. Simular giro de una perilla (Con la rueda del ratón)
+function initKnobs() {
+    const knobs = document.querySelectorAll('.hard-knob');
+    
+    knobs.forEach(knob => {
+        // Asignamos una rotación inicial de 0 grados
+        knob.setAttribute('data-rotation', 0);
+        
+        knob.addEventListener('wheel', (e) => {
+            e.preventDefault(); // Evita que la página haga scroll al girar la perilla
+            
+            let currentRotation = parseInt(knob.getAttribute('data-rotation'));
+            
+            // Detecta la dirección de la rueda del ratón
+            if (e.deltaY < 0) {
+                currentRotation += 15; // Girar a la derecha
+            } else {
+                currentRotation -= 15; // Girar a la izquierda
+            }
+            
+            // Aplicar la rotación visualmente
+            knob.setAttribute('data-rotation', currentRotation);
+            knob.style.transform = `rotate(${currentRotation}deg)`;
+            
+            // Aquí a futuro mapearemos los grados a valores de frecuencia/amplitud
+            console.log("Perilla girada:", knob.id, "Grados:", currentRotation);
+        }, { passive: false }); // Obligatorio para que preventDefault funcione
+    });
+}
+
+// Ejecutar al cargar la página
+initKnobs();
