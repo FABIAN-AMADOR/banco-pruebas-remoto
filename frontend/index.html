@@ -24,22 +24,33 @@
         </div>
         <div class="agent-status" id="agent-status-text">Agente en reposo...</div>
 
-        <!-- NUEVO: Consola de Hardware Físico -->
+        <!-- CONSOLA DE HARDWARE FÍSICO (TIPO YOKOGAWA) -->
         <div class="hardware-console">
-            <!-- Sección Vertical (Botones CH1, CH2, etc.) -->
+            
+            <!-- Grupo 1: Formas de Onda -->
             <div class="hard-section">
-                <div class="hard-btn ch-btn" id="btn-ch1" onclick="toggleHardBtn(this)"></div>
-                <div class="hard-btn ch-btn" id="btn-ch2" onclick="toggleHardBtn(this)"></div>
-                <div class="hard-btn ch-btn" id="btn-ch3" onclick="toggleHardBtn(this)"></div>
+                <span class="hard-label">WAVEFORM</span>
+                <div class="hard-btn signal-btn" id="btn-seno" onclick="setFisicoSignal('senoidal', this)">SINE</div>
+                <div class="hard-btn signal-btn" id="btn-cuadrada" onclick="setFisicoSignal('cuadrada', this)">SQR</div>
+                <div class="hard-btn signal-btn" id="btn-triangular" onclick="setFisicoSignal('triangular', this)">TRI</div>
             </div>
 
-            <!-- Sección de Perillas (Knobs) -->
+            <!-- Grupo 2: Selección de Parámetros -->
             <div class="hard-section">
-                <div class="hard-knob" id="knob-vertical" title="Gira con la rueda del ratón"></div>
-                <div class="hard-knob" id="knob-horizontal" title="Gira con la rueda del ratón"></div>
+                <span class="hard-label">CONTROL</span>
+                <div class="hard-btn param-btn pressed" id="btn-freq" onclick="setFisicoParam('freq', this)">FREQ</div>
+                <div class="hard-btn param-btn" id="btn-amp" onclick="setFisicoParam('amp', this)">AMPL</div>
+                <div class="hard-btn param-btn" id="btn-span" onclick="setFisicoParam('bw', this)">SPAN</div>
+                <div class="hard-btn param-btn" id="btn-rbw" onclick="setFisicoParam('bw', this)">RBW</div>
             </div>
+
+            <!-- Grupo 3: Perilla de Ajuste Maestro -->
+            <div class="hard-section">
+                <span class="hard-label">ADJUST / VALUE</span>
+                <div class="hard-knob" id="knob-main" title="Gira la rueda del ratón para ajustar"></div>
+            </div>
+
         </div>
-
         <!-- Controles Manuales Neón (Conservados abajo) -->
         <div class="agent-controls">
             <button id="btn-mic" class="neon-btn cyan-glow">🎤 Hablar</button>

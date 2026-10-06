@@ -215,36 +215,101 @@ body {
 /* =========================================
    CONSOLA DE HARDWARE FÍSICO
    ========================================= */
+/* =========================================
+   CONSOLA TIPO YOKOGAWA
+   ========================================= */
 .hardware-console {
     display: flex;
-    gap: 30px;
+    gap: 25px;
     margin-top: 30px;
-    padding: 25px;
-    background: linear-gradient(145deg, #1e1e24, #151519); /* Gris textura plástico */
-    border-radius: 12px;
-    border: 2px solid #333;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 2px 2px rgba(255,255,255,0.1);
+    padding: 20px 30px;
+    background: linear-gradient(145deg, #e0e5ec, #f0f5fc); /* Plástico claro tipo Yokogawa */
+    border-radius: 8px;
+    border: 2px solid #b0b8c4;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 2px 5px rgba(255,255,255,0.8);
+    color: #333;
 }
 
 .hard-section {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     align-items: center;
 }
 
-/* 1. Botones Cuadrados (Tipo CH1, CH2) */
+.hard-label {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #555;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+}
+
+/* Base de los botones de hardware */
 .hard-btn {
-    width: 45px;
+    width: 50px;
     height: 35px;
-    background-color: #444; /* Color base si no hay imagen */
-    border-radius: 6px;
-    box-shadow: 0 6px 0 #111, 0 8px 10px rgba(0,0,0,0.5); /* Efecto 3D sin presionar */
+    background-color: #d1d9e6; /* Base por si no hay imagen aún */
+    border-radius: 4px;
+    box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff; /* Neumorfismo (Efecto físico 3D) */
     cursor: pointer;
-    transition: all 0.1s ease; /* Transición rápida para que se sienta físico */
+    transition: all 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #666;
+    background-size: cover;
+    background-position: center;
+}
+
+/* AQUÍ PONES TUS IMÁGENES RECORTE DE LOS BOTONES */
+#btn-seno { /* background-image: url('tu-imagen-seno.png'); */ }
+#btn-cuadrada { /* background-image: url('tu-imagen-cuad.png'); */ }
+#btn-triangular { /* background-image: url('tu-imagen-tri.png'); */ }
+#btn-freq { /* background-image: url('tu-imagen-freq.png'); */ }
+#btn-amp { /* background-image: url('tu-imagen-amp.png'); */ }
+#btn-span { /* background-image: url('tu-imagen-span.png'); */ }
+#btn-rbw { /* background-image: url('tu-imagen-rbw.png'); */ }
+
+/* Gesto de oprimir (Se hunde y prende luz azul/verde) */
+.hard-btn:active, .hard-btn.pressed {
+    box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
+    color: #10B981; /* Texto cambia a verde iluminado */
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+}
+
+/* Perilla Maestra (Knob) */
+.hard-knob {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: #e0e5ec;
+    box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
+    cursor: grab;
     background-size: cover;
     background-position: center;
     position: relative;
+    transform-origin: center center;
+    transition: transform 0.1s linear;
+}
+
+.hard-knob:active { cursor: grabbing; }
+
+/* AQUÍ PONES LA IMAGEN DE TU PERILLA YOKOGAWA */
+#knob-main { /* background-image: url('tu-imagen-knob.png'); */ }
+
+/* Rayita temporal del dial */
+.hard-knob::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 33px;
+    width: 4px;
+    height: 15px;
+    background-color: #555;
+    border-radius: 2px;
 }
 
 /* AQUÍ PONES TUS IMÁGENES RECORTE DE LOS BOTONES */

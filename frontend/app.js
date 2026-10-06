@@ -470,35 +470,81 @@ window.toggleHardBtn = function(btn) {
     console.log("Botón presionado:", btn.id);
 };
 
-// 2. Simular giro de una perilla (Con la rueda del ratón)
-function initKnobs() {
-    const knobs = document.querySelectorAll('.hard-knob');
-    
-    knobs.forEach(knob => {
-        // Asignamos una rotación inicial de 0 grados
-        knob.setAttribute('data-rotation', 0);
-        
-        knob.addEventListener('wheel', (e) => {
-            e.preventDefault(); // Evita que la página haga scroll al girar la perilla
+// ==========================================
+// CONTROL DE HARDWARE FÍSICO (INTERFAZ MAESTRA)
+// ==========================================
+let parametroActivo = 'freq'; // Por defecto la perilla controla Frecuencia
+
+// 1. Botones de Tipo de Señal (Waveforms)
+window.setFisicoSignal = function(tipo, btnElement) {
+    // Apaga los demás botones y enciende el presionado
+    document.querySelectorAll('.signal-btn').forEach(b => b.classList.remove('pressed'));
+    btnElement.classList.add('pressed');
+
+    // Mueve el selector oculto y dispara el evento que ya tienes programado
+    const select = document.getElementById('select-type');
+    if(select) {
+        select.value = tipo;
+        select.dispatchEvent(new Event('change')); // Esto envía la orden a Google
+    }
+};
+
+// 2. Botones de Selección de Parámetro (Control)
+window.setFisicoParam = function(param, btnElement) {
+    // Apaga los demás parámetros y enciende el presionado
+    document.querySelectorAll('.param-btn').forEach(b => b.classList.remove('pressed'));
+    btnElement.classList.add('pressed');
+
+    parametroActivo = param;
+    console.log("Perilla asignada a:", param.toUpperCase());
+};
+
+// 3. Perilla Giratoria (Knob Principal)
+function initMasterKnob() {
+    const knob = document.getElementById('knob-main');
+    if(!knob) return;
+
+    let rotation = 0;
+
+    knob.addEventListener('wheel', (e) => {
+        e.preventDefault(); // Evita scroll de pantalla
+
+        // Rota la perilla físicamente
+        rotation += (e.deltaY < 0) ? 15 : -15; // Arriba derecha, abajo izquierda
+        knob.style.transform = `rotate(${rotation}deg)`;
+
+        // Identifica qué input oculto vamos a modificar
+        let inputTarget;
+        let step = 0;
+
+        if (parametroActivo === 'freq') {
+            inputTarget = document.getElementById('input-freq');
+            step = 100; // Salto de frecuencia
+        } else if (parametroActivo === 'amp') {
+            inputTarget = document.getElementById('input-amp');
+            step = 1; // Salto de amplitud
+        } else if (parametroActivo === 'bw') {
+            inputTarget = document.getElementById('input-bw');
+            step = 50; // Salto de ancho de banda (Span/RBW)
+        }
+
+        if (inputTarget) {
+            let currentValue = parseFloat(inputTarget.value);
+            let newValue = (e.deltaY < 0) ? currentValue + step : currentValue - step;
+
+            // Validar límites antes de enviar (para no romper la API)
+            let min = parseFloat(inputTarget.min);
+            let max = parseFloat(inputTarget.max);
             
-            let currentRotation = parseInt(knob.getAttribute('data-rotation'));
-            
-            // Detecta la dirección de la rueda del ratón
-            if (e.deltaY < 0) {
-                currentRotation += 15; // Girar a la derecha
+            if (newValue >= min && newValue <= max) {
+                inputTarget.value = newValue;
+                inputTarget.dispatchEvent(new Event('change')); // Desencadena el envío a la API
             } else {
-                currentRotation -= 15; // Girar a la izquierda
+                console.warn(`Límite alcanzado para ${parametroActivo}`);
             }
-            
-            // Aplicar la rotación visualmente
-            knob.setAttribute('data-rotation', currentRotation);
-            knob.style.transform = `rotate(${currentRotation}deg)`;
-            
-            // Aquí a futuro mapearemos los grados a valores de frecuencia/amplitud
-            console.log("Perilla girada:", knob.id, "Grados:", currentRotation);
-        }, { passive: false }); // Obligatorio para que preventDefault funcione
-    });
+        }
+    }, { passive: false });
 }
 
-// Ejecutar al cargar la página
-initKnobs();
+// Inicializar la perilla al cargar
+initMasterKnob();
